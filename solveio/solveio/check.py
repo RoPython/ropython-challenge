@@ -68,7 +68,8 @@ def check_input_output(user, problem_name):
         if get_module_name(problem) == problem_name:
             prob_match = problem
     if not all([sol_match, prob_match]):
-        return None    # no solution or user problem found
+        print("No solution or user problem found")
+        return None
     # try to compute a score
     module = _get_module(prob_match)
     tests = 0

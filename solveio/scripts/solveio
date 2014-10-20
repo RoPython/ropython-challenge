@@ -1,1 +1,44 @@
 #! /usr/bin/env python
+
+
+import argparse
+
+from solveio import generate_input_output, check_input_output
+
+
+def start_server(args):
+    pass
+
+
+def check_problem(args):
+    for pname in args.problem:
+        score = check_input_output(args.user, pname)
+        print("{} - {}".format(pname, score))
+
+
+def main():
+    parser = argparse.ArgumentParser(description="SolveIO CLI")
+    subparser = parser.add_subparsers(title="commands")
+    
+    server = subparser.add_parser("server", help="server management")
+    subserver = server.add_subparsers(title="actions")
+    server_start = subserver.add_parser("start", help="start the server")
+    server_start.set_defaults(func=start_server)
+    server_gen = subserver.add_parser("generate", help="generate i/o for solutions")
+    server_gen.set_defaults(func=lambda args: generate_input_output())
+    server_check = subserver.add_parser("check", help="check a problem for an user")
+    server_check.add_argument("user", metavar="USER",
+                              help="user name")
+    server_check.add_argument("problem", metavar="PROBLEM", nargs="*",
+                              default=[],  
+                              help="problem name")
+    server_check.set_defaults(func=check_problem)
+
+    args = parser.parse_args()
+    if not hasattr(args, "func"):
+        parser.error("incomplete command")
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()
