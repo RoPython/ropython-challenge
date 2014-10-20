@@ -19,7 +19,7 @@ setup(
         "Cosmin Poieana <cmin@ropython.org>"
     ),
     url="https://github.com/RoPython/ropython-challenge/tree/master/solveio",
-    packages=["solveio", "solveio.api", "solveio.problems"],
+    packages=["solveio", "solveio.api"],
     scripts=["scripts/solveio"],
     requires=["redis", "cherrypy"]
 )
