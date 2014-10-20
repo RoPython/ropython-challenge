@@ -1,5 +1,7 @@
 *.py[cod]
 *.orig
-solutions
-build
+*.in
+*.out
+solveio/solutions/*.py
 test.py
+build

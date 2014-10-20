@@ -1,15 +1,24 @@
 import imp
 import json
 import os
+from unittest import mock
 
 from solveio.config import THEIRS
-from solveio.util import (get_problems, get_solutions,
-                          split_name_ext, get_module_name)
+from solveio.util import (get_problems, get_solutions, get_module_name)
 
 
-def _get_module(module_path)
-    module = imp.load_source(get_module_name(module_path),
-                             module_path)
+fake_module = mock.Mock()
+fake_module.generate.return_value = []
+fake_module.compute.return_value = None
+
+def _get_module(module_path):
+    try:
+        module = imp.load_source(get_module_name(module_path),
+                                 module_path)
+    except Exception as exc:
+        # TODO(cmin): log this message
+        print("Load: {}".format(exc))
+        return fake_module
     return module
 
 
@@ -17,9 +26,10 @@ def generate_input_output():
     """Build input/output pairs for each solution."""
     for solution in get_solutions():
         # get and load solution module
-        module = _get_module(solution[0])
-        module_name, module_dir = os.path.split(module_path)
-        module_name = split_name_ext(module_name)[0]
+        module_path = solution[0]
+        module = _get_module(module_path)
+        module_dir, module_name = os.path.split(module_path)
+        module_name = get_module_name(module_name)
         # generate input data and obtain output
         input_fpath, output_fpath = map(
             lambda ext: os.path.join(
@@ -29,8 +39,8 @@ def generate_input_output():
             ["in", "out"]
         )
         # and write them to disk
-        with (open(input_fpath, "w") as input_fout,
-              open(output_fpath, "w") as output_fout):
+        with open(input_fpath, "w") as input_fout, \
+              open(output_fpath, "w") as output_fout:
             for data in module.generate():
                 input_fout.write("{}\n".format(json.dumps(data)))
                 output_fout.write("{}\n".format(
@@ -63,12 +73,18 @@ def check_input_output(user, problem_name):
     module = _get_module(prob_match)
     tests = 0
     ok = 0
-    with (open(sol_match[1], "r") as input_fin,
-            open(sol_match[2], "r") as output_fin):
-        input_line = input_fin.readline().strip()
-        output_line = output_fin.readline().strip()
-        tests += 1
-        if _testio(module, json.loads(input_line),
-                   json.loads(output_line)):
-            ok += 1
+    with open(sol_match[1], "r") as input_fin, \
+            open(sol_match[2], "r") as output_fin:
+        while True:
+            input_line = input_fin.readline().strip()
+            output_line = output_fin.readline().strip()
+            if not all([input_line, output_line]):
+                break
+            tests += 1
+            if _testio(module, json.loads(input_line),
+                       json.loads(output_line)):
+                ok += 1
+    if not tests:
+        print("No tests found for {} in {}".format(user, problem_name))
+        return -1
     return ok / tests * 100
