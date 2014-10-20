@@ -52,7 +52,11 @@ def generate_input_output():
 def _testio(module, idata, odata):
     # test the module logic
     # TODO(cmin): do this in a safer manner
-    _odata = module.compute(idata)
+    try:
+        _odata = module.compute(idata)
+    except Exception as exc:
+        print("Compute: {}".format(exc))
+        _odata = None
     return _odata == odata
 
 
