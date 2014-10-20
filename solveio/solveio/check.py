@@ -88,3 +88,12 @@ def check_input_output(user, problem_name):
         print("No tests found for {} in {}".format(user, problem_name))
         return -1
     return ok / tests * 100
+
+
+def save_user_problem(user, problem_name, content):
+    dirpath = os.path.join(THEIRS, user)
+    if not os.path.isdir(dirpath):
+        os.makedirs(dirpath)
+    filepath = os.path.join(dirpath, "{}.py".format(problem_name))
+    with open(filepath, "w") as fout:
+        fout.write(content)
