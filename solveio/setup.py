@@ -22,6 +22,12 @@ setup(
     packages=["solveio", "solveio.api"],
     scripts=["scripts/solveio"],
     package_dir={"solveio": "solveio"},
-    package_data={"solveio": ["problems/*", "solutions/*"]},
+    package_data={
+        "solveio": [
+            "problems/*",
+            "solutions/*",
+            "theirs/*"
+        ]
+    },
     requires=["redis", "cherrypy"]
 )

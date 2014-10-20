@@ -9,12 +9,11 @@
 #    - folositi functia `round` pentru a pastra doar primele doua zecimale
 
 
-
-def calcul(intrare):
+def compute(data):
     pass
 
 
 if __name__ == "__main__":
-    assert calcul([1, 2, 3]) == [6, 2, 1.82]
-    assert calcul([2, 8]) == [10, 5, 4]
-    assert calcul([1, 1, 1, 1]) == [4, 1, 1]
+    assert compute([1, 2, 3]) == [6, 2, 1.82]
+    assert compute([2, 8]) == [10, 5, 4]
+    assert compute([1, 1, 1, 1]) == [4, 1, 1]
