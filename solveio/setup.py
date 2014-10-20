@@ -21,5 +21,7 @@ setup(
     url="https://github.com/RoPython/ropython-challenge/tree/master/solveio",
     packages=["solveio", "solveio.api"],
     scripts=["scripts/solveio"],
+    package_dir={"solveio": "solveio"},
+    package_data={"solveio": ["problems/*", "solutions/*"]},
     requires=["redis", "cherrypy"]
 )
