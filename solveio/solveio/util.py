@@ -146,7 +146,20 @@ class RedisConnection(object):
 
     def get_user(self, api_key):
         """Get information regarding user which has received api key."""
-        return self.rcon.hget("user.info", api_key)
+        return json.load(self.rcon.hget("user.info", api_key))
+
+    def add_exercise_lock(self, api_key, exercise):
+        """Add new lock for a received exercise"""
+        key = "user.exercises.lock.{}".format(api_key)
+        self.rcon.sadd(key, exercise)
+
+    def get_exercise_lock(self, api_key, exercise=None):
+        """Get the exercise lock list."""
+        key = "user.exercises.lock.{}".format(api_key)
+        if exercise:
+            return self.rcon.sismember(key, exercise)
+        else:
+            return self.rcon.smembers(key)
 
 
 class UserManager(cherrypy.Tool):
@@ -166,7 +179,8 @@ class UserManager(cherrypy.Tool):
         request = cherrypy.request
         content = request.params.pop('content', None)
         if not content:
-            return False
+            return True
+
         cipher = AESCipher(secret)
         try:
             params = json.loads(cipher.decrypt(content))
@@ -179,21 +193,23 @@ class UserManager(cherrypy.Tool):
         for key, value in params.items():
             request.params[key] = value
 
+        return True
+
     def load(self):
         """Process information received from client."""
         request = cherrypy.request
         api_key = request.params.get('api_key')
         secret = self._redis.get_secret(api_key)
 
+        request.params["status"] = False
+        request.params["verbose"] = "OK"
+
         if not secret:
-            request.params["status"] = False
             request.params["verbose"] = "Invalid api key provided."
             return
 
         if not self._process_content(secret):
-            request.params["status"] = False
             request.params["verbose"] = "Invalid request."
             return
 
         request.params["status"] = True
-        request.params["user"] = self._redis.get_user(api_key)
