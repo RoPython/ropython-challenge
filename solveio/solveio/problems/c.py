@@ -9,6 +9,6 @@ def compute(data):
 
 
 if __name__ == "__main__":
-    assert compute({"1": "2", "2": "1"}) == {"1", "2"}
-    assert compute({"1": "1", "2": "3"}) == {"1"}
-    assert compute({"1": "2", "3": "4", "5": "6"}) == {}
+    assert compute({"1": "2", "2": "1"}) == ["1", "2"]
+    assert compute({"1": "1", "2": "3"}) == ["1"]
+    assert compute({"1": "2", "3": "4", "5": "6"}) == []
