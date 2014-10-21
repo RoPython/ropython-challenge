@@ -26,7 +26,7 @@ class Solution:
         response = {"meta": {"status": status, "verbose": verbose},
                     "content": None}
 
-        if not response["status"]:
+        if not response["meta"]["status"]:
             cherrypy.response.status = 400
             return response
 
