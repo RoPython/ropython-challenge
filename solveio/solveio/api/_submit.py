@@ -17,6 +17,7 @@ class Submit:
         """Setup the new instance."""
         self._rcon = RedisConnection()
 
+    @cherrypy.tools.json_out()
     @cherrypy.tools.user_required()
     def POST(self, api_key, exercise, content, **kwargs):
         """Submit solution."""

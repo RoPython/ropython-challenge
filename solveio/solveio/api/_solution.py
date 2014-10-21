@@ -20,6 +20,7 @@ class Solution:
         """Setup the new instance."""
         self._rcon = RedisConnection()
 
+    @cherrypy.tools.json_out()
     @cherrypy.tools.user_required()
     def GET(self, exercise=None, api_key=None, status=True, verbose='OK'):
         """View the solutions."""
