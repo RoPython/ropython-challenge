@@ -97,8 +97,10 @@ def check_input_output(user, problem_name):
 
 def save_user_problem(user, problem_name, content):
     dirpath = os.path.join(THEIRS, user)
-    if not os.path.isdir(dirpath):
+    try:
         os.makedirs(dirpath)
+    except Exception:
+        pass
     filepath = os.path.join(dirpath, "{}.py".format(problem_name))
     with open(filepath, "w") as fout:
         fout.write(content)
