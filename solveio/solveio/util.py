@@ -88,7 +88,11 @@ class RedisConnection(object):
 
     def get_secret(self, api_key):
         """Get the secret for the user with received api key."""
-        # TODO: Get the key from redis
+        return self.rcon.hget("user.secret", api_key)
+
+    def get_user(self, api_key):
+        """Get information regarding user which has received api key."""
+        return self.rcon.hget("user.info", api_key)
 
 
 class UserManager(cherrypy.Tool):
@@ -103,7 +107,7 @@ class UserManager(cherrypy.Tool):
         self._redis = RedisConnection()
 
     @staticmethod
-    def _process_content(content, secret):
+    def _process_content(secret):
         """Get information from request and update request params."""
         request = cherrypy.request
         content = request.params.pop('content', None)
@@ -124,15 +128,18 @@ class UserManager(cherrypy.Tool):
     def load(self):
         """Process information received from client."""
         request = cherrypy.request
-        try:
-            api_key = request.params.pop('api_key')
-        except IndexError:
-            request.params["status"] = False
-            request.params["verbose"] = "Missing required argument."
-            return
-
+        api_key = request.params.get('api_key')
         secret = self._redis.get_secret(api_key)
+
         if not secret:
             request.params["status"] = False
             request.params["verbose"] = "Invalid api key provided."
             return
+
+        if not self._process_content(secret):
+            request.params["status"] = False
+            request.params["verbose"] = "Invalid request."
+            return
+
+        request.params["status"] = True
+        request.params["user"] = self._redis.get_user(api_key)

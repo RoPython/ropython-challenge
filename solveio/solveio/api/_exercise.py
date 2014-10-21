@@ -9,5 +9,13 @@ class Exercise:
 
     """The representation of the exercices."""
 
-    def __init__(self):
-        """Setup the new instance."""
+    exposed = True
+
+    def GET(self, *args, **kwargs):
+        """View the exercises."""
+        if args:
+            # TODO: View a specific exercise
+            pass
+        else:
+            # TODO: View all the exercises
+            pass

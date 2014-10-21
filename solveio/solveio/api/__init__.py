@@ -9,6 +9,5 @@ from ._submit import Submit
 from ._top import Top
 
 cherrypy.tools.user_required = UserManager()
-
 evaluator = Evaluator(cherrypy.engine)
 evaluator.subscribe()
