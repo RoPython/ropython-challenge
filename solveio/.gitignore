@@ -2,7 +2,7 @@
 *.orig
 *.in
 *.out
-solveio/solutions/*.py
+#solveio/solutions/*.py
 solveio/theirs/*/*.py
 test.py
 build
