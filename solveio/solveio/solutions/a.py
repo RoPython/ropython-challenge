@@ -23,10 +23,6 @@ def generate():
 # ----------
 
 
-# pentru radical
-import math
-
-
 def compute(data):
     # obtinem marimea listei
     cnt = len(data)
@@ -38,7 +34,7 @@ def compute(data):
     geom = 1
     for nr in data:
         geom *= nr
-    geom = math.pow(geom, 1 / cnt)
+    geom = pow(geom, 1 / cnt)
     # intoarcem rezultatul rotunjit
     return [dsum, round(arit, 2), round(geom, 2)]
 
